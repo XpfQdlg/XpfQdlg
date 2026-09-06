@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>徐鹏飞 · 会打字的自我介绍</title>
+<meta name="description" content="徐鹏飞的自我介绍，一个字一个字流式输出。青岛理工大学网络空间安全专业。">
+<style>
+  /* ===== 全局重置与配色 ===== */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0b0f1a;
+    --panel: #121a2e;
+    --edge: #223052;
+    --ink: #d7e1f5;
+    --accent: #58e0a8;   /* 终端绿 */
+    --accent-dim: #2f6b52;
+    --cyan: #63c7ff;
+    --amber: #ffd479;
+    --muted: #7c8db0;
+  }
+
+  body {
+    background:
+      radial-gradient(1200px 600px at 70% -10%, #16213b 0%, transparent 60%),
+      radial-gradient(900px 500px at 10% 110%, #10233a 0%, transparent 55%),
+      var(--bg);
+    color: var(--ink);
+    font-family: "Cascadia Mono", "JetBrains Mono", Consolas, "Courier New",
+                 "Microsoft YaHei", "PingFang SC", monospace;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    line-height: 1.7;
+  }
+
+  /* ===== 终端窗口 ===== */
+  .terminal {
+    width: 100%;
+    max-width: 780px;
+    background: var(--panel);
+    border: 1px solid var(--edge);
+    border-radius: 14px;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+  }
+
+  /* 标题栏 */
+  .term-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid var(--edge);
+    user-select: none;
+  }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot:nth-child(1) { background: #ff5f57; }
+  .dot:nth-child(2) { background: #febc2e; }
+  .dot:nth-child(3) { background: #28c840; }
+  .term-bar .title {
+    margin-left: 8px;
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 0.3px;
+  }
+  .term-bar .ctrl { margin-left: auto; display: flex; gap: 8px; }
+
+  /* 按钮 */
+  button {
+    font-family: inherit;
+    font-size: 12.5px;
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--edge);
+    border-radius: 8px;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  button:hover { background: rgba(255, 255, 255, 0.12); border-color: var(--accent-dim); }
+  button:active { transform: translateY(1px); }
+  button.primary { border-color: var(--accent-dim); color: var(--accent); }
+
+  /* 输出区 */
+  .term-body {
+    padding: 26px 28px 30px;
+    min-height: 380px;
+    font-size: 15.5px;
+  }
+  .line { white-space: pre-wrap; word-break: break-word; }
+  .h1 {
+    color: var(--accent);
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .sub {
+    color: var(--cyan);
+    font-size: 14px;
+  }
+  .dim { color: var(--muted); }
+  .proj {
+    color: var(--amber);
+    font-weight: 600;
+  }
+  .code {
+    color: var(--cyan);
+    background: rgba(99, 199, 255, 0.08);
+    padding: 1px 6px;
+    border-radius: 5px;
+  }
+  .sign { color: var(--accent); font-weight: 600; margin-top: 10px; }
+
+  /* 光标 */
+  .cursor {
+    display: inline-block;
+    width: 9px;
+    height: 1.15em;
+    background: var(--accent);
+    vertical-align: text-bottom;
+    margin-left: 2px;
+    animation: blink 0.9s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .term-foot {
+    padding: 10px 16px;
+    border-top: 1px solid var(--edge);
+    color: var(--muted);
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .term-foot a { color: var(--cyan); text-decoration: none; }
+  .term-foot a:hover { text-decoration: underline; }
+
+  /* 已播完提示 */
+  .done-hint { color: var(--muted); font-size: 12.5px; }
+</style>
+</head>
+<body>
+  <div class="terminal">
+    <!-- 标题栏 -->
+    <div class="term-bar">
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      <span class="title">pengfei@github: ~/self-intro — 自动播放中</span>
+      <span class="ctrl">
+        <button id="btnSkip" class="primary">快进全部</button>
+        <button id="btnReplay">重新播放</button>
+      </span>
+    </div>
+
+    <!-- 输出区 -->
+    <div class="term-body" id="out" aria-live="polite">
+      <span class="cursor"></span>
+    </div>
+
+    <!-- 脚注 -->
+    <div class="term-foot">
+      <span>主页 <a href="https://github.com/XpfQdlg">github.com/XpfQdlg</a></span>
+      <span id="status" class="done-hint"></span>
+    </div>
+  </div>
+
+<noscript>
+<pre>
+徐鹏飞
+青岛理工大学 · 网络空间安全 · 2025 级
+
+抱歉，你的浏览器禁用了 JavaScript，打字效果无法播放。请开启后刷新，
+或直接访问我的 GitHub 主页：https://github.com/XpfQdlg
+</pre>
+</noscript>
+
+<script>
+"use strict";
+/* ============================================================
+ * 打字机引擎
+ * 逐字渲染 lineList，支持 快进 / 重播 / 自动滚动
+ * ============================================================ */
+
+// 一句话一个元素。text 为空表示空行。
+const lineList = [
+  { text: "你好，我是徐鹏飞。",               cls: "h1" },
+  { text: "青岛理工大学 · 网络空间安全 · 2025 级。", cls: "sub" },
+  { text: "" },
+  { text: "我学的方向是网络安全，平时最大的爱好，是把自己脑子里“好玩的想法”做成能跑起来的东西。" },
+  { text: "代码躺在硬盘里叫练习，能被人真的用起来，才叫作品。" },
+  { text: "" },
+  { text: "2026 年，我做了两件拿得出手的事：" },
+  { text: "" },
+  { text: "▪ 青小理 —— 学生日常事务智能管理平台（比赛作品「码上有理」）。", cls: "proj" },
+  { text: "   Coze 智能体 + MCP 服务端 + SQLite，覆盖晚点名、考勤、宿舍后勤、综测、校园办事导航五个模块。" },
+  { text: "   服务端仓库已开源：student-affairs-mcp", cls: "code" },
+  { text: "" },
+  { text: "▪ TokenWiser —— AI 输入习惯教练。", cls: "proj" },
+  { text: "   往对话框里整段贴日志？它把白白浪费的 token 算成一笔账给你看。" },
+  { text: "   想把密钥、卡号这类敏感信息发出去？它会在涉密内容上提醒你。" },
+  { text: "   理念就一句话：只建议，不替换。" },
+  { text: "" },
+  { text: "这两件都收在 Voyage 上，那是我放“好玩的东西”的仓库。以后有意思的点子，都会往这艘船上装。" },
+  { text: "" },
+  { text: "不只会写代码。2026 年夏天，我和队友们带了一支 8 人队伍，去做乡村中老年反诈实践「探真·筑盾」。" },
+  { text: "工具再酷，能帮到真人才算数。" },
+  { text: "" },
+  { text: "你现在看到的这个页面，是我自己写的——它正一个字一个字地往外蹦。" },
+  { text: "如果你刚好路过，欢迎去主页逛逛，顺便给喜欢的仓库点个 Star ⭐。" },
+  { text: "" },
+  { text: "—— 徐鹏飞，2026", cls: "sign" },
+];
+
+/* 每个标点后面停久一点，更像人打字 */
+const PAUSE_AFTER = new Set(["。", "，", "、", "：", "；", "！", "？", "…", "”", "”"]);
+const CHAR_MS   = 55;   // 每个汉字/字符的基准耗时（毫秒）
+const PUNCT_MS  = 260;  // 遇到标点后的额外停顿
+const NEWLINE_MS = 700; // 每行结束后的停顿
+
+const out   = document.getElementById("out");
+const statusEl = document.getElementById("status");
+const btnSkip   = document.getElementById("btnSkip");
+const btnReplay = document.getElementById("btnReplay");
+
+let timers = [];      // 所有挂起的 setTimeout，便于取消
+let finished = false;
+
+function clearTimers() {
+  timers.forEach(clearTimeout);
+  timers = [];
+}
+
+/* ---------- 核心：把 line 逐字打进指定元素 ---------- */
+function typeInto(el, text, resolve) {
+  let i = 0;
+  function step() {
+    if (i >= text.length) { resolve(); return; }
+    const ch = text[i];
+    el.textContent += ch;
+    i++;
+    let delay = CHAR_MS;
+    if (PAUSE_AFTER.has(ch)) delay = PUNCT_MS;
+    timers.push(setTimeout(step, delay));
+  }
+  step();
+}
+
+/* ---------- 控制光标：一直显示在末尾 ---------- */
+let cursorEl = null;
+function ensureCursor() {
+  if (!cursorEl) {
+    cursorEl = document.createElement("span");
+    cursorEl.className = "cursor";
+    out.appendChild(cursorEl);
+  }
+}
+
+/* ---------- 播放主流程 ---------- */
+function play() {
+  clearTimers();
+  finished = false;
+  out.innerHTML = "";
+  cursorEl = null;
+  ensureCursor();
+  statusEl.textContent = "";
+
+  let li = 0;
+
+  function nextLine() {
+    if (finished) return;
+    if (li >= lineList.length) {
+      finish();
+      return;
+    }
+    const item = lineList[li++];
+    const span = document.createElement("div");
+    span.className = "line" + (item.cls ? " " + item.cls : "");
+    out.insertBefore(span, cursorEl);
+
+    if (!item.text) {
+      // 空行：加一个空格占位以保持行高
+      span.textContent = " ";
+      timers.push(setTimeout(nextLine, NEWLINE_MS));
+      return;
+    }
+    typeInto(span, item.text, () => {
+      timers.push(setTimeout(nextLine, NEWLINE_MS));
+    });
+    autoScroll();
+  }
+  nextLine();
+}
+
+function finish() {
+  finished = true;
+  statusEl.textContent = "✓ 播放完毕";
+}
+
+/* 始终把最新的字滚进视野 */
+function autoScroll() {
+  timers.push(setTimeout(() => {
+    out.scrollTop = out.scrollHeight;
+  }, 20));
+}
+
+/* 快进：直接渲染全部 */
+function skipAll() {
+  clearTimers();
+  finished = true;
+  out.innerHTML = "";
+  cursorEl = null;
+  lineList.forEach((item) => {
+    const span = document.createElement("div");
+    span.className = "line" + (item.cls ? " " + item.cls : "");
+    span.textContent = item.text || " ";
+    out.appendChild(span);
+  });
+  ensureCursor();
+  statusEl.textContent = "✓ 已快进到结尾";
+}
+
+btnSkip.addEventListener("click", skipAll);
+btnReplay.addEventListener("click", play);
+
+/* 尊重“减弱动态效果”的系统偏好：直接完整显示 */
+if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  skipAll();
+} else {
+  play();
+}
+</script>
+</body>
+</html>
