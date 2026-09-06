@@ -13,7 +13,7 @@
 <p align="center"><b>青岛理工大学 · 网络空间安全 · 2025 级</b> ｜ 白天啃网安，晚上造玩具。</p>
 
 <p align="center">
-  <a href="https://xpfqdlg.github.io/XpfQdlg/">
+  <a href="https://xpfqdlg.github.io/">
     <img src="https://img.shields.io/badge/%F0%9F%8E%AC%20%E6%B5%81%E5%BC%8F%E8%87%AA%E6%88%91%E4%BB%8B%E7%BB%8D-%E7%82%B9%E6%88%91%E7%9C%8B%E9%80%90%E5%AD%97%E8%BE%93%E5%87%BA-2ea44f?style=for-the-badge" alt="流式自我介绍"/>
   </a>
 </p>
@@ -57,5 +57,5 @@ Python · FastMCP · SQLite · Flask · Coze（扣子）· JavaScript / HTML / C
 
 <p align="center">
   <a href="https://github.com/XpfQdlg"><b>GitHub 主页</b></a> ·
-  <a href="https://xpfqdlg.github.io/XpfQdlg/"><b>会打字的自我介绍</b></a>
+  <a href="https://xpfqdlg.github.io/"><b>会打字的自我介绍</b></a>
 </p>
